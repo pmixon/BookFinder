@@ -19,6 +19,11 @@ import java.util.List;
 
 public final class QueryUtils {
 
+    private static final int READ_TIMEOUT = 10000;
+    private static final int CONNECT_TIMEOUT = 15000;
+    private static final int RESPONSE_CODE_200 = 200;
+    private static final int ARTIFICIAL_LOAD_TIME = 2000;
+
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
     private QueryUtils() {
@@ -30,16 +35,27 @@ public final class QueryUtils {
 
         try {
 
+            JSONArray itemsArray = new JSONArray();
+            JSONArray bookAuthors = new JSONArray();
+            String author = "";
             JSONObject root = new JSONObject(JSONResponse);
-            JSONArray itemsArray = root.getJSONArray("items");
+
+            if (root.has("items")) {
+                itemsArray = root.getJSONArray("items");
+            }
 
             for (int i = 0; i < itemsArray.length(); i++) {
                 JSONObject currentEarthquakeObj = itemsArray.getJSONObject(i);
                 JSONObject volumeInfo = currentEarthquakeObj.getJSONObject("volumeInfo");
                 String bookTitle = volumeInfo.getString("title");
 
-                JSONArray bookAuthors = volumeInfo.getJSONArray("authors");
-                String author = bookAuthors.getString(0);
+                if(volumeInfo.has("authors")){
+                    bookAuthors = volumeInfo.getJSONArray("authors");
+                }
+
+                if (bookAuthors != null) {
+                    author = bookAuthors.getString(0);
+                }
 
                 books.add(new Book(bookTitle, author));
             }
@@ -55,7 +71,7 @@ public final class QueryUtils {
 
         // Test progress bar
         try {
-            Thread.sleep(2000);
+            Thread.sleep(ARTIFICIAL_LOAD_TIME);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -97,12 +113,12 @@ public final class QueryUtils {
         InputStream inputStream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000 /* milliseconds */);
-            urlConnection.setConnectTimeout(15000 /* milliseconds */);
+            urlConnection.setReadTimeout(READ_TIMEOUT);
+            urlConnection.setConnectTimeout(CONNECT_TIMEOUT /* milliseconds */);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
-            if (urlConnection.getResponseCode() == 200) {
+            if (urlConnection.getResponseCode() == RESPONSE_CODE_200) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
