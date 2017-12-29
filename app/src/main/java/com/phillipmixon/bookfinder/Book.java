@@ -17,7 +17,7 @@ public class Book {
         this.mAuthor = mAuthor;
     }
 
-    public Book(String mAuthor, String mTitle) {
+    public Book(String mTitle, String mAuthor) {
         this.mAuthor = mAuthor;
         this.mTitle = mTitle;
     }
@@ -29,6 +29,5 @@ public class Book {
     public void setmTitle(String mTitle) {
         this.mTitle = mTitle;
     }
-
 
 }

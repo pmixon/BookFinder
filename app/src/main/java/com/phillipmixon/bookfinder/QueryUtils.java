@@ -31,19 +31,17 @@ public final class QueryUtils {
         try {
 
             JSONObject root = new JSONObject(JSONResponse);
-            JSONArray features = root.getJSONArray("features");
+            JSONArray itemsArray = root.getJSONArray("items");
 
+            for (int i = 0; i < itemsArray.length(); i++) {
+                JSONObject currentEarthquakeObj = itemsArray.getJSONObject(i);
+                JSONObject volumeInfo = currentEarthquakeObj.getJSONObject("volumeInfo");
+                String bookTitle = volumeInfo.getString("title");
 
-            for (int i = 0; i < features.length(); i++) {
-                JSONObject currentEarthquakeObj = features.getJSONObject(i);
-                JSONObject properties = currentEarthquakeObj.getJSONObject("properties");
+                JSONArray bookAuthors = volumeInfo.getJSONArray("authors");
+                String author = bookAuthors.getString(0);
 
-                double newMag = properties.getDouble("mag");
-                String newCity = properties.getString("place");
-                long newTime = properties.getLong("time");
-                String newURL = properties.getString("url");
-
-                books.add(new Book(newCity, Long.toString(newTime)));
+                books.add(new Book(bookTitle, author));
             }
 
         } catch (JSONException e) {
