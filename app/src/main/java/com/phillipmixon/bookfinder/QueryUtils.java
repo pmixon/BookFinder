@@ -38,26 +38,27 @@ public final class QueryUtils {
             JSONArray itemsArray = new JSONArray();
             JSONArray bookAuthors = new JSONArray();
             String author = "";
+            String bookTitle = "";
             JSONObject root = new JSONObject(JSONResponse);
 
             if (root.has("items")) {
                 itemsArray = root.getJSONArray("items");
-            }
 
-            for (int i = 0; i < itemsArray.length(); i++) {
-                JSONObject currentEarthquakeObj = itemsArray.getJSONObject(i);
-                JSONObject volumeInfo = currentEarthquakeObj.getJSONObject("volumeInfo");
-                String bookTitle = volumeInfo.getString("title");
+                for (int i = 0; i < itemsArray.length(); i++) {
+                    JSONObject currentEarthquakeObj = itemsArray.getJSONObject(i);
+                    JSONObject volumeInfo = currentEarthquakeObj.getJSONObject("volumeInfo");
+                    bookTitle = volumeInfo.optString("title");
 
-                if(volumeInfo.has("authors")){
-                    bookAuthors = volumeInfo.getJSONArray("authors");
+                    if (volumeInfo.has("authors")) {
+                        bookAuthors = volumeInfo.getJSONArray("authors");
+                    }
+
+                    if (bookAuthors != null) {
+                        author = bookAuthors.optString(0);
+                    }
+
+                    books.add(new Book(bookTitle, author));
                 }
-
-                if (bookAuthors != null) {
-                    author = bookAuthors.getString(0);
-                }
-
-                books.add(new Book(bookTitle, author));
             }
 
         } catch (JSONException e) {
