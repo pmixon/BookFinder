@@ -51,10 +51,9 @@ public final class QueryUtils {
 
                     if (volumeInfo.has("authors")) {
                         bookAuthors = volumeInfo.getJSONArray("authors");
-                    }
-
-                    if (bookAuthors != null) {
-                        author = bookAuthors.optString(0);
+                        if (bookAuthors != null) {
+                            author = bookAuthors.optString(0);
+                        }
                     }
 
                     books.add(new Book(bookTitle, author));

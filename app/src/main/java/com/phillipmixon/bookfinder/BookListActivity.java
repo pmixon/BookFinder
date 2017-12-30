@@ -49,7 +49,6 @@ public class BookListActivity extends AppCompatActivity {
         bookListView.setEmptyView(findViewById(R.id.no_data_message));
 
         if(bookListScrollState != null) {
-            Log.d(LOG_TAG, "restoring booklist scroll state..");
             bookListView.onRestoreInstanceState(bookListScrollState);
         }
 
@@ -74,7 +73,6 @@ public class BookListActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        Log.d(LOG_TAG, "saving booklist scroll state @ onPause");
         bookListScrollState = bookListView.onSaveInstanceState();
         super.onPause();
     }
